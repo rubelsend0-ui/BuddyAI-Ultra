@@ -1,7 +1,9 @@
 package com.buddy.ultra.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -16,7 +18,9 @@ import com.buddy.ultra.ui.theme.*
 @Composable
 fun SettingsScreen(
     viewModel: MainViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onOpenAccessibility: () -> Unit = {},
+    onDisableBatteryOpt: () -> Unit = {}
 ) {
     var apiUrl by remember { mutableStateOf(viewModel.securityManager.getApiUrl()) }
     var apiToken by remember { mutableStateOf(viewModel.securityManager.getApiToken()) }
@@ -26,7 +30,7 @@ fun SettingsScreen(
         containerColor = PureBlack,
         topBar = {
             TopAppBar(
-                title = { Text("System Configuration", color = LightText) },
+                title = { Text("System & Background Engine", color = LightText) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = ElectricBlue)
@@ -41,8 +45,34 @@ fun SettingsScreen(
                 .fillMaxSize()
                 .padding(pad)
                 .padding(20.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text("BUDDY AI CORE URL", color = ElectricBlue, fontSize = 12.sp)
+            Text("PERMANENT BACKGROUND PERMISSIONS", color = NeonCyan, fontSize = 13.sp)
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = onOpenAccessibility,
+                colors = ButtonDefaults.buttonColors(containerColor = MidnightCard),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("1. Enable Accessibility (Auto-Click WhatsApp)", color = ElectricBlue)
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Button(
+                onClick = onDisableBatteryOpt,
+                colors = ButtonDefaults.buttonColors(containerColor = MidnightCard),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("2. Disable Battery Optimization (24/7 Run)", color = EmeraldGreen)
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Text("BUDDY AI CORE CLOUDFLARE URL", color = ElectricBlue, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = apiUrl,
@@ -55,14 +85,14 @@ fun SettingsScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            Text("X-BUDDY-TOKEN CREDENTIAL", color = ElectricBlue, fontSize = 12.sp)
+            Text("SECURITY TOKEN", color = ElectricBlue, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = apiToken,
                 onValueChange = { apiToken = it; viewModel.securityManager.setApiToken(it) },
-                label = { Text("Security Token", color = MutedText) },
+                label = { Text("X-Buddy-Token", color = MutedText) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = LightText,
@@ -70,14 +100,14 @@ fun SettingsScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            Text("WAKE WORD TRIGGER", color = ElectricBlue, fontSize = 12.sp)
+            Text("WAKE WORD", color = ElectricBlue, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
                 value = wakePhrase,
                 onValueChange = { wakePhrase = it; viewModel.securityManager.setWakeWord(it) },
-                label = { Text("Phrase (e.g. hey buddy)", color = MutedText) },
+                label = { Text("Activation Phrase", color = MutedText) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = LightText,
@@ -85,15 +115,15 @@ fun SettingsScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = { viewModel.checkBackendHealth() },
-                colors = ButtonDefaults.buttonColors(containerColor = MidnightCard),
+                colors = ButtonDefaults.buttonColors(containerColor = DarkNavySurface),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Ping Buddy AI Core Health", color = ElectricBlue)
+                Text("Ping Server Health", color = ElectricBlue)
             }
         }
     }

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Buddy AI Ultra</string>
+    <string name="accessibility_desc">Buddy AI Ultra Automated Messaging &amp; Device Control Engine</string>
 </resources>

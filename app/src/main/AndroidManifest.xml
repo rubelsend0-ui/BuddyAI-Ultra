@@ -6,26 +6,19 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
-
-    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
 
     <queries>
         <package android:name="com.whatsapp" />
         <package android:name="com.whatsapp.w4b" />
         <package android:name="com.google.android.youtube" />
-        <intent>
-            <action android:name="android.intent.action.VIEW" />
-            <data android:scheme="https" />
-        </intent>
     </queries>
 
     <application
@@ -39,37 +32,41 @@
 
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true"
-            android:theme="@style/Theme.BuddyUltra">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Unkillable Persistent Voice Service -->
         <service
             android:name=".voice.VoiceForegroundService"
+            android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="microphone" />
 
+        <!-- WhatsApp Auto-Send Accessibility Service -->
         <service
-            android:name=".music.MediaPlaybackService"
-            android:exported="false"
-            android:foregroundServiceType="mediaPlayback">
+            android:name=".actions.BuddyAccessibilityService"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="true">
             <intent-filter>
-                <action android:name="androidx.media3.session.MediaSessionService" />
+                <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice.AccessibilityService"
+                android:resource="@xml/accessibility_service_config" />
         </service>
 
+        <!-- Restart Trigger Receiver -->
         <receiver
-            android:name=".actions.DeviceAdminLockReceiver"
-            android:permission="android.permission.BIND_DEVICE_ADMIN"
+            android:name=".voice.ServiceRestartReceiver"
+            android:enabled="true"
             android:exported="true">
-            <meta-data
-                android:name="android.app.device_admin"
-                android:resource="@xml/device_admin_policies" />
             <intent-filter>
-                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="com.buddy.ultra.RESTART_VOICE_DAEMON" />
             </intent-filter>
         </receiver>
 
