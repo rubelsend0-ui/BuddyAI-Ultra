@@ -59,7 +59,7 @@ dependencies {
     ksp(libs.androidx.room.compiler)
 
     implementation(libs.retrofit)
-    implementation(libs.retrofit-converter-gson)
+    implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.logging)
 
     implementation(libs.androidx.media3.exoplayer)
